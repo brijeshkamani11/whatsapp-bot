@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Bot Control Panel</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #25D366;
+      --primary-dark: #1da851;
+      --secondary: #128C7E;
+      --bg-dark: #0b141a;
+      --bg-light: #1f2c34;
+      --bg-lighter: #2a3942;
+      --text: #e9edef;
+      --text-muted: #8696a0;
+      --border: #2a3942;
+      --danger: #f44336;
+      --success: #4caf50;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 300px 1fr 350px;
+      height: 100vh;
+      gap: 1px;
+      background: var(--border);
+    }
+
+    /* Header */
+    .header {
+      background: var(--bg-light);
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-muted);
+    }
+
+    .status-dot.active {
+      background: var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Sidebar - Chats List */
+    .sidebar {
+      background: var(--bg-light);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .chat-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .chat-item:hover {
+      background: var(--bg-lighter);
+    }
+
+    .chat-item.active {
+      background: var(--bg-lighter);
+    }
+
+    .chat-name {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .chat-preview {
+      font-size: 12px;
+      color: var(--text-muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Main - Messages */
+    .main {
+      background: var(--bg-dark);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .messages-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .message {
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      max-width: 70%;
+    }
+
+    .message.incoming {
+      align-self: flex-start;
+    }
+
+    .message.outgoing {
+      align-self: flex-end;
+    }
+
+    .message-header {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      padding: 0 8px;
+    }
+
+    .message-bubble {
+      padding: 8px 12px;
+      border-radius: 8px;
+      word-wrap: break-word;
+    }
+
+    .message.incoming .message-bubble {
+      background: var(--bg-light);
+    }
+
+    .message.outgoing .message-bubble {
+      background: var(--secondary);
+    }
+
+    .message-time {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      padding: 0 8px;
+    }
+
+    .empty-state {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* Control Panel */
+    .control-panel {
+      background: var(--bg-light);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-section {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-section h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .quick-replies {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--bg-lighter);
+      color: var(--text);
+    }
+
+    .btn:hover {
+      background: var(--bg-dark);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-small {
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+
+    .input-group {
+      margin-bottom: 12px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .input-group input,
+    .input-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-dark);
+      color: var(--text);
+      font-size: 13px;
+      font-family: inherit;
+      resize: vertical;
+    }
+
+    .input-group textarea {
+      min-height: 80px;
+    }
+
+    .template-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .template-item {
+      padding: 10px;
+      background: var(--bg-dark);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.2s;
+    }
+
+    .template-item:hover {
+      background: var(--bg-lighter);
+    }
+
+    .template-name {
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .template-preview {
+      color: var(--text-muted);
+      font-size: 11px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-dark);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--bg-lighter);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--border);
+    }
+
+    /* Loading */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .container {
+        grid-template-columns: 250px 1fr;
+      }
+      .control-panel {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="loading">
+      <div class="spinner"></div>
+      <div>Connecting to bot...</div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    // State management
+    const state = {
+      ready: false,
+      chats: [],
+      messages: [],
+      templates: {},
+      activeChat: null
+    };
+
+    // Socket connection
+    const socket = io();
+
+    // DOM elements
+    let app, chatList, messagesContainer, controlPanel;
+
+    // Initialize
+    function init() {
+      setupSocketListeners();
+    }
+
+    // Check status via API
+    function checkStatus() {
+      fetch('/api/status')
+        .then(r => r.json())
+        .then(data => {
+          console.log('API Status:', data);
+          state.ready = data.ready;
+          app = document.getElementById('app');
+          if (state.ready && !app.querySelector('.container')) {
+            renderApp();
+            // Load initial data
+            loadInitialData();
+          }
+        })
+        .catch(err => console.error('Status check failed:', err));
+    }
+
+    // Load initial data
+    function loadInitialData() {
+      fetch('/api/chats')
+        .then(r => r.json())
+        .then(chats => {
+          state.chats = chats;
+          renderChatList();
+        });
+      
+      fetch('/api/messages')
+        .then(r => r.json())
+        .then(messages => {
+          state.messages = messages;
+        });
+    }
+
+    // Update status indicator
+    function updateStatusIndicator() {
+      const statusDot = document.querySelector('.status-dot');
+      const statusText = document.querySelector('.status-indicator span');
+      if (statusDot && statusText) {
+        if (state.ready) {
+          statusDot.classList.add('active');
+          statusText.textContent = 'Connected';
+        } else {
+          statusDot.classList.remove('active');
+          statusText.textContent = 'Disconnected';
+        }
+      }
+    }
+
+    // Setup socket event listeners
+    function setupSocketListeners() {
+      socket.on('connect', () => {
+        console.log('Connected to server');
+        // Request initial status
+        checkStatus();
+      });
+
+      socket.on('status', (data) => {
+        console.log('Status update:', data);
+        state.ready = data.ready;
+        if (state.ready && !app.querySelector('.container')) {
+          renderApp();
+        }
+        updateStatusIndicator();
+      });
+
+      socket.on('chats', (chats) => {
+        state.chats = chats;
+        renderChatList();
+      });
+
+      socket.on('messages', (messages) => {
+        state.messages = messages;
+        renderMessages();
+      });
+
+      socket.on('message', (message) => {
+        state.messages.push(message);
+        renderMessages();
+      });
+
+      socket.on('send:success', () => {
+        document.getElementById('customMessage').value = '';
+      });
+
+      socket.on('send:error', (data) => {
+        alert('Failed to send message: ' + data.error);
+      });
+
+      // Load templates
+      fetch('/api/templates')
+        .then(r => r.json())
+        .then(templates => {
+          state.templates = templates;
+          renderTemplates();
+        });
+    }
+
+    // Render main app
+    function renderApp() {
+      app = document.getElementById('app');
+      app.innerHTML = `
+        <div class="container">
+          <div class="sidebar">
+            <div class="header">
+              <h1>Chats</h1>
+            </div>
+            <div class="chat-list" id="chatList"></div>
+          </div>
+
+          <div class="main">
+            <div class="header">
+              <h1 id="activeChatName">Select a chat</h1>
+              <div class="status-indicator">
+                <div class="status-dot ${state.ready ? 'active' : ''}"></div>
+                <span>${state.ready ? 'Connected' : 'Disconnected'}</span>
+              </div>
+            </div>
+            <div class="messages-container" id="messagesContainer">
+              <div class="empty-state">Select a chat to view messages</div>
+            </div>
+          </div>
+
+          <div class="control-panel">
+            <div class="header">
+              <h1>Control Panel</h1>
+            </div>
+            
+            <div class="panel-section">
+              <h3>Quick Replies</h3>
+              <div class="quick-replies" id="quickReplies"></div>
+            </div>
+
+            <div class="panel-section">
+              <h3>Custom Message</h3>
+              <div class="input-group">
+                <textarea id="customMessage" placeholder="Type your message..."></textarea>
+              </div>
+              <button class="btn btn-primary" onclick="sendCustomMessage()" style="width: 100%">
+                Send Message
+              </button>
+            </div>
+
+            <div class="panel-section">
+              <h3>Templates</h3>
+              <div class="template-list" id="templateList"></div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      chatList = document.getElementById('chatList');
+      messagesContainer = document.getElementById('messagesContainer');
+      controlPanel = document.getElementById('control-panel');
+
+      renderChatList();
+      renderMessages();
+      renderQuickReplies();
+      renderTemplates();
+    }
+
+    // Render chat list
+    function renderChatList() {
+      if (!chatList) return;
+      
+      if (state.chats.length === 0) {
+        chatList.innerHTML = '<div class="empty-state">No chats available</div>';
+        return;
+      }
+
+      chatList.innerHTML = state.chats.map(chat => `
+        <div class="chat-item ${state.activeChat?.id === chat.id ? 'active' : ''}" 
+             onclick="selectChat('${chat.id}')">
+          <div class="chat-name">${chat.name || 'Unknown'}</div>
+          <div class="chat-preview">${chat.isGroup ? '👥 Group' : '💬 Chat'}</div>
+        </div>
+      `).join('');
+    }
+
+    // Render messages
+    function renderMessages() {
+      if (!messagesContainer) return;
+
+      if (!state.activeChat) {
+        messagesContainer.innerHTML = '<div class="empty-state">Select a chat to view messages</div>';
+        return;
+      }
+
+      const chatMessages = state.messages.filter(m => 
+        m.from === state.activeChat.id || m.to === state.activeChat.id
+      );
+
+      if (chatMessages.length === 0) {
+        messagesContainer.innerHTML = '<div class="empty-state">No messages yet</div>';
+        return;
+      }
+
+      messagesContainer.innerHTML = chatMessages.map(msg => `
+        <div class="message ${msg.fromMe ? 'outgoing' : 'incoming'}">
+          <div class="message-header">${msg.fromName}</div>
+          <div class="message-bubble">${escapeHtml(msg.body)}</div>
+          <div class="message-time">${formatTime(msg.timestamp)}</div>
+        </div>
+      `).join('');
+
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Render quick replies
+    function renderQuickReplies() {
+      const quickReplies = document.getElementById('quickReplies');
+      if (!quickReplies) return;
+
+      const buttons = [
+        { label: '✅ Available', template: 'available' },
+        { label: '⏰ Busy', template: 'busy' },
+        { label: '📞 Call Later', template: 'callLater' },
+        { label: '🕐 Work Hours', template: 'workingHours' }
+      ];
+
+      quickReplies.innerHTML = buttons.map(btn => `
+        <button class="btn btn-small" onclick="sendTemplate('${btn.template}')">
+          ${btn.label}
+        </button>
+      `).join('');
+    }
+
+    // Render templates
+    function renderTemplates() {
+      const templateList = document.getElementById('templateList');
+      if (!templateList) return;
+
+      templateList.innerHTML = Object.entries(state.templates).map(([key, text]) => `
+        <div class="template-item" onclick="useTemplate('${key}')">
+          <div class="template-name">${formatTemplateName(key)}</div>
+          <div class="template-preview">${text}</div>
+        </div>
+      `).join('');
+    }
+
+    // Select chat
+    function selectChat(chatId) {
+      state.activeChat = state.chats.find(c => c.id === chatId);
+      const chatName = state.activeChat?.name || 'Unknown';
+      
+      console.log(`[UI ACTION] Selected chat: ${chatName}`);
+      
+      document.getElementById('activeChatName').textContent = chatName;
+      renderChatList();
+      renderMessages();
+    }
+
+    // Send template
+    function sendTemplate(templateKey) {
+      if (!state.activeChat) {
+        alert('Please select a chat first');
+        return;
+      }
+
+      const message = state.templates[templateKey];
+      if (!message) return;
+
+      console.log(`[UI ACTION] Sending template "${templateKey}" to ${state.activeChat.name}`);
+      
+      socket.emit('send:message', {
+        chatId: state.activeChat.id,
+        message: message
+      });
+    }
+
+    // Use template (fill in custom message)
+    function useTemplate(templateKey) {
+      const message = state.templates[templateKey];
+      document.getElementById('customMessage').value = message;
+    }
+
+    // Send custom message
+    function sendCustomMessage() {
+      if (!state.activeChat) {
+        alert('Please select a chat first');
+        return;
+      }
+
+      const message = document.getElementById('customMessage').value.trim();
+      if (!message) return;
+
+      console.log(`[UI ACTION] Sending custom message to ${state.activeChat.name}`);
+      console.log(`   Message: "${message}"`);
+      
+      socket.emit('send:message', {
+        chatId: state.activeChat.id,
+        message: message
+      });
+    }
+
+    // Utility functions
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function formatTime(timestamp) {
+      const date = new Date(timestamp * 1000);
+      return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function formatTemplateName(key) {
+      return key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+    }
+
+    // Initialize app
+    init();
+  </script>
+</body>
+</html>

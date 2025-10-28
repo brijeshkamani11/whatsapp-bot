@@ -1,0 +1,17 @@
+#!/bin/bash
+# Pre-commit hook to remind about README updates
+
+echo ""
+echo "🚨 REMINDER: Have you updated README.md?"
+echo ""
+echo "Check if you need to update:"
+echo "  ✓ Current Implementation Status"
+echo "  ✓ Future Roadmap (move completed items)"
+echo "  ✓ Project Structure (if files added)"
+echo "  ✓ Commands (if new commands added)"
+echo "  ✓ Configuration (if config changed)"
+echo ""
+echo "Press Enter to continue or Ctrl+C to cancel..."
+read
+
+exit 0
