@@ -9,6 +9,18 @@
 
 This is not optional. This is not a suggestion. This is MANDATORY.
 
+### Rule #1.1: Memory-Documentation Sync
+**When creating/updating AI memories, ALSO update documentation files**
+
+If you create or update a memory about:
+- New rules → Update PROJECT_RULES.md
+- New features → Update README.md (Current Implementation)
+- New goals → Update README.md (Future Roadmap)
+- User preferences → Update PROJECT_RULES.md (AI Assistant Guidelines)
+- Project context → Update README.md (Project Purpose)
+
+**Both memory AND files must stay in sync. Always update both.**
+
 ### Rule #2: LocalAuth Must Never Break
 **Never remove or break LocalAuth functionality**
 

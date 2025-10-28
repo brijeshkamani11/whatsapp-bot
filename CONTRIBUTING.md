@@ -19,6 +19,23 @@
 - Adding new API endpoints
 - Changing development workflow
 
+### When to Update Documentation Files
+
+✅ **Creating/Updating AI Memories:**
+
+When you create or update a memory, ALSO update the corresponding file:
+
+| Memory About | Update This File | Section |
+|--------------|------------------|---------|
+| New rule | PROJECT_RULES.md | Add to appropriate section |
+| New feature | README.md | Current Implementation Status |
+| New goal | README.md | Future Roadmap |
+| User preference | PROJECT_RULES.md | AI Assistant Guidelines |
+| Project context | README.md | Project Purpose |
+| Architecture | README.md | Project Structure |
+
+**CRITICAL:** Memory and files must stay in sync. Update BOTH, not just one.
+
 ### How to Update README
 
 1. **New Feature Added:**

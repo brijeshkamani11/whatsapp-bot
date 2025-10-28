@@ -34,6 +34,22 @@ Update README.md:
 - Configuration (if config changed)
 ```
 
+### 4. When Creating/Updating Memories
+```
+ALWAYS update corresponding documentation files:
+
+Memory Type          → Update File
+─────────────────────────────────────────
+New rule            → PROJECT_RULES.md
+New feature         → README.md (Current Implementation)
+New goal            → README.md (Future Roadmap)
+User preference     → PROJECT_RULES.md (AI Guidelines)
+Project context     → README.md (Project Purpose)
+Architecture change → README.md (Project Structure)
+
+BOTH memory AND files must be updated. Never just one.
+```
+
 ## What is a "Structural Change"?
 
 ✅ YES - Update README:
