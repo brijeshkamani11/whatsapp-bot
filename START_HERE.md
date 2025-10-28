@@ -38,11 +38,24 @@ Only after reading the above, start exploring:
 
 ---
 
-## 🚨 THE GOLDEN RULE
+## 🚨 THE GOLDEN RULES
 
+### Rule #1: README-First Development
 **EVERY structural change MUST update README.md immediately.**
 
 This is not optional. This is not a suggestion. This is MANDATORY.
+
+### Rule #1.1: Memory-Documentation Sync
+**When creating/updating AI memories, ALSO update documentation files.**
+
+If you create a memory, you MUST also update the corresponding file:
+- New rule → Update PROJECT_RULES.md
+- New feature → Update README.md (Current Implementation)
+- New goal → Update README.md (Future Roadmap)
+- User preference → Update PROJECT_RULES.md (AI Guidelines)
+- Project context → Update README.md (Project Purpose)
+
+**BOTH memory AND files must stay in sync. Always update both.**
 
 ### What counts as "structural change"?
 - ✅ Adding new features

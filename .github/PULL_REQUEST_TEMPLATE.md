@@ -33,6 +33,7 @@
 - [ ] Documented new commands/APIs
 - [ ] Updated project structure if needed
 - [ ] Added usage examples
+- [ ] **If memory created/updated, corresponding file also updated** (MANDATORY)
 
 ### Specific Updates to README
 <!-- Check all that apply -->

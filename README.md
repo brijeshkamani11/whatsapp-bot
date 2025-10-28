@@ -68,8 +68,12 @@ whatsapp-bot/
 ├── index.js                    # Legacy entry (backup)
 ├── package.json
 ├── .gitignore
+├── .ai/
+│   └── MEMORY_SYNC_RULE.md    # 🤖 Memory-Documentation sync (ALL AIs)
 ├── .github/
 │   └── PULL_REQUEST_TEMPLATE.md
+├── .windsurf/
+│   └── README_ENFORCEMENT.md  # 🤖 Windsurf-specific enforcement
 ├── src/
 │   ├── bot/
 │   │   └── WhatsAppBot.js     # Core bot logic
@@ -96,7 +100,9 @@ whatsapp-bot/
 2. **README.md** (this file) - Complete project documentation, roadmap, and status
 3. **PROJECT_RULES.md** - Mandatory development rules and best practices
 4. **CONTRIBUTING.md** - Detailed contribution guidelines and workflows
-5. **.github/PULL_REQUEST_TEMPLATE.md** - PR checklist including README update requirement
+5. **.ai/MEMORY_SYNC_RULE.md** - 🤖 **FOR ALL AIs** - Memory-documentation sync rule
+6. **.github/PULL_REQUEST_TEMPLATE.md** - PR checklist including README update requirement
+7. **.windsurf/README_ENFORCEMENT.md** - Windsurf-specific enforcement (optional)
 
 ## 🛠️ Installation
 
@@ -342,9 +348,24 @@ Attach debugger in VS Code or Chrome DevTools at `localhost:9229`
 
 ## 🤖 AI Assistant Guidelines
 
-**⚠️ MANDATORY READING FOR ALL AI ASSISTANTS (Windsurf, Cursor, Copilot, etc.)**
+**⚠️ MANDATORY READING FOR ALL AI ASSISTANTS (Windsurf, Cursor, Copilot, ChatGPT, Claude, etc.)**
 
 > **📖 Also read: PROJECT_RULES.md and CONTRIBUTING.md for complete guidelines**
+
+### 🚨 CRITICAL: Memory-Documentation Sync
+
+**When you create or update a memory, you MUST also update the corresponding file:**
+
+| Memory About | Update This File | Section |
+|--------------|------------------|---------|
+| New rule | PROJECT_RULES.md | Add to appropriate section |
+| New feature | README.md | Current Implementation Status |
+| New goal | README.md | Future Roadmap |
+| User preference | PROJECT_RULES.md | AI Assistant Guidelines |
+| Project context | README.md | Project Purpose |
+| Architecture | README.md | Project Structure |
+
+**BOTH memory AND files must stay in sync. Never update just one.**
 
 ### Core Principles
 
